@@ -27,7 +27,7 @@ To use it in your project, call it on a jQuery selector of choice with the follo
 ##Properties
 
 ####contentSrc:
-A string that allows you to specify a source file. Maki supports JSON and TXT extensions. If the file has a TXT extension maki will treat every new line in that file as an element. If the extension is JSON it will default to an "elements"-array at the top level of your JSON, if you want to override this you can use the content property. 
+A string that allows you to specify a source file. Maki supports JSON and TXT extensions. If the file has a TXT extension maki will treat every new line in that file as an element. If the extension is JSON it will default to looping through the entire JSON. If you want to use a specific key you can set a .JSON extension to contentSrc and a string to specify the key in the content property below.
 
 ####content:
 An array of emmet strings or a single emmet string, also allows for a multidimensional array to extract elements into different arrays and re-use them in multiple cases. If there is a file with a JSON extension filled in as contentSrc, the content property will accept a string to specify which array in the JSON to use. 
