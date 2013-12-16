@@ -5,6 +5,12 @@
 
 var makiJS = {
 
+    /** 
+    @func       =setup
+    @namespace  @makiJS
+    @desc       Sets up all makis properties before running them through
+    @returns    formatted settings object
+    **/
     setup: function(overrides, defaults) {
         // Set codeView variable equal to the copyControls if not defined
         overrides.codeView = (overrides.codeView) ? overrides.codeView : defaults.copyControls;
@@ -49,6 +55,11 @@ var makiJS = {
     },
     /* End makiJS.setup */
 
+    /** 
+    @func       =loadConfig
+    @namespace  @makiJS
+    @desc       Loads in maki's contentSrc asynchronously
+    **/
     loadConfig: function(settings) {
         var sc = settings.contentSrc,
             extension = sc.indexOf('.txt') !== -1 ? "text" : "json";
@@ -84,7 +95,7 @@ var makiJS = {
 
     /** 
     @func       =loadMakiDependencies
-    @namespace  =jQuery.prototype.maki
+    @namespace  @makiJS
     @desc       Loads maki's dependencies
     **/
     loadDependencies: function(settings) {
@@ -102,10 +113,9 @@ var makiJS = {
 
     /** 
     @func       =create
-    @namespace  =makiJS
+    @namespace  @makiJS
     @param      settings | maki's settings object
     @param      $this | The element selected
-    @return     A warning in the console
     **/
     create: function(settings, $this) {
 
@@ -144,7 +154,6 @@ var makiJS = {
                 $element.append($makiWrapper.prepend($makiSnippet));
             }
 
-
             // Append the html() from the temporary div to the selected element
             $this.append($element.html());
 
@@ -160,9 +169,7 @@ var makiJS = {
 
             // Create the codeView
             prettyPrint();
-
         } else {
-
             var $element = $('<div />'),
                 e;
 
@@ -200,15 +207,10 @@ var makiJS = {
 
         // As soon as the data is requested from one of the buttons, copy the right content to the clipboard */
         clip.on('dataRequested', function(client, args) {
-
             $('.copyNotification').remove();            
-
-                $this = $(this)
+            var $this = $(this)
             if ($this.hasClass('btnCopyEmmet')) {
                 snippet = $this.parents('.makiWrapper').attr('data-emmet');
-            
-            
-                console.log(snippet);        
                 $this.parents('.makiBtnWrapper').append($('<div class="copyNotification">Copied Emmet!</div>'));
             }
 
