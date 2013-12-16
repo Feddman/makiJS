@@ -89,11 +89,12 @@ var makiJS = {
     **/
     loadDependencies: function(settings) {
         // If debug is set to true, load in all depedencies individually
-        if (settings.debug == true) {
+        if (settings.debug) {
             $.getScript(settings.path + "prettify.js");
             $.getScript(settings.path + "jquery.zencoding.js");
             $.getScript(settings.path + "ZeroClipboard.js");
-        } else { // Load in a minified file of all dependencies
+        } else if (!settings.debug) {
+            // Load in a minified file of all dependencies        
             $.getScript(settings.path + "makiDependencies.min.js");
         }
     },
@@ -108,53 +109,15 @@ var makiJS = {
     **/
     create: function(settings, $this) {
 
-        /** 
-            @func       =spaceWarning
-            @desc       function to output a warning in the console
-            @param      i | index of the item in the content array
-            @param      c | index (char) of the  position of the space in the object
-            @return     A warning in the console
-            **/
-        var spaceWarning = function(i, c) {
-            console.warn("Warning! Space detected on char " + c + ", in item " + i + ": " + settings.content[i]);
-        },
-
-            /**
-            @func       =whiteSpaceCheckChars
-            @desc       Checks for certain whitespace characters
-            **/
-            whiteSpaceCheckChars = [">", "+", "*", "^"],
-
-            /** 
-            @func       =whiteSpaceCheck 
-            @desc       function to check and correct emmet-string
-            @param      i | index of the item in the content array
-            @param      e | emmet string to check
-            @return     the emmet-string with whitespaces removed
-            **/
-            whiteSpaceCheck = function(i, e) {
-                $.each(whiteSpaceCheckChars, function(j, f) {
-                    while (e.indexOf(' ' + f) > -1) {
-                        spaceWarning(i, e.indexOf(' ' + f));
-                        e = e.replace(' ' + f, f);
-                    }
-                    while (e.indexOf(f + ' ') > -1) {
-                        spaceWarning(i, e.indexOf(f + ' '));
-                        e = e.replace(f + ' ', f);
-                    }
-                });
-                return e;
-            },
-
             /**
             @func       =loremReplace
             @desc       Function to replace lorem, since the zencoding-plugin doesn't understand this.
             @param      e | emmet string to check
             @return     the emmet-string with lorem's replaced
             **/
-            loremReplace = function(e) {
+        var loremReplace = function(e) {
                 while (e.indexOf('lorem') > -1) {
-                    e = e.replace("lorem", "{Lorem ipsum dolor sit amet, <a href=\"/\">consectetur adipisicing elit</a>. Mollitia, cumque, quasi, consequatur, esse accusantium perferendis delectus quis pariatur nobis quam saepe voluptates quia iusto facere quidem dolorum dicta omnis consectetur.}");
+                    e = e.replace("{lorem}", "{Lorem ipsum dolor sit amet, <a href=\"/\">consectetur adipisicing elit</a>. Mollitia, cumque, quasi, consequatur, esse accusantium perferendis delectus quis pariatur nobis quam saepe voluptates quia iusto facere quidem dolorum dicta omnis consectetur.}");
                 }
                 return e;
             };
@@ -162,7 +125,8 @@ var makiJS = {
         // If there is content filled in and copyControls are enabled 
         if (settings.content.length && settings.copyControls == true) {
             // Create an empty div element as placeholder for content
-            var $element = $('<div />');
+            var $element = $('<div />'),
+                e;
 
             // If append is false, remove all contents from the element before appending
             if (settings.append == false) {
@@ -170,44 +134,47 @@ var makiJS = {
             }
 
             // Loop through the content array and display the needed elements on the screen
-            $.each(settings.content, function(i, e) {
-                e = whiteSpaceCheck(i, e);
-                e = loremReplace(e);
+            for (var i = 0, len = settings.content.length; i < len; i++) {
+                    e = loremReplace(settings.content[i]);
 
-                var $makiWrapper = $('<div class="makiWrapper clearfix"><div class="makiBtnWrapper"><button class="btnCopyEmmet">Copy Emmet</button> <button class="btnCopyHTML">Copy HTML</button></div></div>').data('maki', e),
+                var $makiWrapper = $('<div class="makiWrapper clearfix"><div class="makiBtnWrapper"><button class="btnCopyEmmet">Copy Emmet</button> <button class="btnCopyHTML">Copy HTML</button></div></div>').attr('data-emmet', e),
                     $makiSnippet = $('<div class="makiSnippet clearfix"/>').zencode(e);
 
                 // Append it to the temporary div element
                 $element.append($makiWrapper.prepend($makiSnippet));
+            }
 
-                if (settings.codeView == true) {
-                    var makiHTML = $('div.makiSnippet').eq(i).html(),
-                        codeView = $("<pre class='prettyprint' />").text(makiHTML),
-                        $eWrapper = $('div.makiWrapper').eq(i);
-                    $eWrapper.append(codeView);
-                }
-            });
 
             // Append the html() from the temporary div to the selected element
             $this.append($element.html());
+
+            if (settings.codeView) {
+                for (var i = 0, len = settings.content.length; i < len; i++) {                
+                    var makiHTML = $('.makiSnippet').eq(i).html(),
+                        codeView = $("<pre class='prettyprint' />").text(makiHTML),
+                        $eWrapper = $('.makiWrapper').eq(i);
+
+                    $eWrapper.append(codeView);
+                }
+            }
 
             // Create the codeView
             prettyPrint();
 
         } else {
-            // Loop through the content array and display the needed elements on the screen
-            var $element = $('<div />');
+
+            var $element = $('<div />'),
+                e;
+
             if (settings.append == false) {
                 $this.html('');
             }
 
-            // Loop through the content array and display the needed elements on the screen */
-            $.each(settings.content, function(i, e) {
+            // Loop through the content array and display the needed elements on the screen
+            for (var i = 0, len = settings.content.length; i < len; i++) {
+                    e = loremReplace(settings.content[i]);
 
-                e = whiteSpaceCheck(i, e);
-                e = loremReplace(e);
-
-                var $makiWrapper = $('<span />').data('maki', e),
+                    $makiWrapper = $('<span />').attr('data-emmet', e),
                     $makiSnippet = $('<span />').zencode(e);
 
                 if (settings.clearfix) {
@@ -217,31 +184,39 @@ var makiJS = {
                 // Append it to the temporary div element
                 $element.append($makiWrapper.prepend($makiSnippet));
 
-            });
+            }
             // Append the html() from the temporary div to the selected element
             $this.append($element.html());
         }
 
         // Create the buttons to copy emmet/HTML with
-        var copyButtons = $('button.btnCopymaki, button.btnCopyHTML');
+        var copyButtons = $('button.btnCopyEmmet, button.btnCopyHTML'),
+            snippet = "",
 
-        // Create a new ZeroClipboard instance
-        var clip = new ZeroClipboard(copyButtons, {
-            moviePath: settings.path + "ZeroClipboard.swf"
-        });
+            // Create a new ZeroClipboard instance
+            clip = new ZeroClipboard(copyButtons, {
+                moviePath: settings.path + "ZeroClipboard.swf"
+            });
 
         // As soon as the data is requested from one of the buttons, copy the right content to the clipboard */
         clip.on('dataRequested', function(client, args) {
-            $('.copyNotification').remove();
-            var snippet = "";
-            if ($(this).hasClass('btnCopymaki')) {
-                snippet = $(this).parents('.makiWrapper').data('maki');
-                $(this).parents('.makiBtnWrapper').append($('<div class="copyNotification">Copied Emmet!</div>'));
+
+            $('.copyNotification').remove();            
+
+                $this = $(this)
+            if ($this.hasClass('btnCopyEmmet')) {
+                snippet = $this.parents('.makiWrapper').attr('data-emmet');
+            
+            
+                console.log(snippet);        
+                $this.parents('.makiBtnWrapper').append($('<div class="copyNotification">Copied Emmet!</div>'));
             }
-            if ($(this).hasClass('btnCopyHTML')) {
-                snippet = $(this).parents('.makiWrapper').find('.makiSnippet').html();
-                $(this).parents('.makiBtnWrapper').append($('<div class="copyNotification">Copied HTML!</div>'));
+
+            if ($this.hasClass('btnCopyHTML')) {
+                snippet = $this.parents('.makiWrapper').find('.makiSnippet').html();
+                $this.parents('.makiBtnWrapper').append($('<div class="copyNotification">Copied HTML!</div>'));
             }
+
             clip.setText(snippet);
 
             $('.copyNotification').fadeOut(5000, function() {
