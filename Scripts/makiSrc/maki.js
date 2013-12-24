@@ -182,18 +182,17 @@ var makiJS = {
 
             // Append the html() from the temporary div to the selected element
             $this.append($element.html());
-
+            
+            // If codeView is set to true, loop through wrappers and append codeView
             if (settings.codeView) {
-                for (var i = 0, len = settings.content.length; i < len; i++) {                
+                for (var i = $('.prettyprint').length, len = i + settings.content.length; i < len; i++) {
                     var makiHTML = $('.makiSnippet').eq(i).html(),
-                        codeView = $("<pre class='prettyprint' />").text(makiHTML),
-                        $eWrapper = $('.makiWrapper').eq(i);
-
-                    $eWrapper.append(codeView);
+                        codeView = $("<pre class='prettyprint' />").text(makiHTML);
+                    $('.makiWrapper').eq(i).append(codeView);
                 }
             }
 
-            // Create the codeView
+            // Create the syntax highlighting
             prettyPrint();
         } else {
             var $element = $('<div />'),
