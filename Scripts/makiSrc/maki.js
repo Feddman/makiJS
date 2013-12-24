@@ -138,10 +138,10 @@ var makiJS = {
                     while (e.indexOf(' ' + whiteSpaceCheckChars[i]) > -1) {                        
                         e = e.replace(' ' + whiteSpaceCheckChars[i], whiteSpaceCheckChars[i]);
                     }
-                    while (e.indexOwhiteSpaceCheckChars[i](whiteSpaceCheckChars[i] + ' ') > -1) {
+                    while (e.indexOf(whiteSpaceCheckChars[i] + ' ') > -1) {
                         e = e.replace(whiteSpaceCheckChars[i] + ' ', whiteSpaceCheckChars[i]);
                     }
-                }
+                });
                 return e;
             },
 
