@@ -135,11 +135,11 @@ var makiJS = {
             **/
             whiteSpaceCheck = function(i, e) {
                 for (var i = 0, len = whiteSpaceCheckChars.length; i < len; i++) {
-                    while (e.indexOf(' ' + f) > -1) {                        
-                        e = e.replace(' ' + f, f);
+                    while (e.indexOf(' ' + whiteSpaceCheckChars[i]) > -1) {                        
+                        e = e.replace(' ' + whiteSpaceCheckChars[i], whiteSpaceCheckChars[i]);
                     }
-                    while (e.indexOf(f + ' ') > -1) {
-                        e = e.replace(f + ' ', f);
+                    while (e.indexOwhiteSpaceCheckChars[i](whiteSpaceCheckChars[i] + ' ') > -1) {
+                        e = e.replace(whiteSpaceCheckChars[i] + ' ', whiteSpaceCheckChars[i]);
                     }
                 });
                 return e;
