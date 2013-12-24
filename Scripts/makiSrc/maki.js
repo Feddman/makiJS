@@ -141,7 +141,7 @@ var makiJS = {
                     while (e.indexOf(f + ' ') > -1) {
                         e = e.replace(f + ' ', f);
                     }
-                });
+                }
                 return e;
             },
 
