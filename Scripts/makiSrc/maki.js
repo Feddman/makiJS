@@ -120,12 +120,38 @@ var makiJS = {
     create: function(settings, $this) {
 
             /**
+            @func       =whiteSpaceCheckChars
+            @desc       Checks for certain whitespace characters
+            **/
+        var 
+            whiteSpaceCheckChars = [">", "+", "*", "^"],
+ 
+            /** 
+            @func       =whiteSpaceCheck 
+            @desc       function to check and correct emmet-string
+            @param      i | index of the item in the content array
+            @param      e | emmet string to check
+            @return     the emmet-string with whitespaces removed
+            **/
+            whiteSpaceCheck = function(i, e) {
+                for (var i = 0, len = whiteSpaceCheckChars.length; i < len; i++) {
+                    while (e.indexOf(' ' + f) > -1) {                        
+                        e = e.replace(' ' + f, f);
+                    }
+                    while (e.indexOf(f + ' ') > -1) {
+                        e = e.replace(f + ' ', f);
+                    }
+                });
+                return e;
+            },
+
+            /**
             @func       =loremReplace
             @desc       Function to replace lorem, since the zencoding-plugin doesn't understand this.
             @param      e | emmet string to check
             @return     the emmet-string with lorem's replaced
             **/
-        var loremReplace = function(e) {
+            loremReplace = function(e) {
                 while (e.indexOf('lorem') > -1) {
                     e = e.replace("{lorem}", "{Lorem ipsum dolor sit amet, <a href=\"/\">consectetur adipisicing elit</a>. Mollitia, cumque, quasi, consequatur, esse accusantium perferendis delectus quis pariatur nobis quam saepe voluptates quia iusto facere quidem dolorum dicta omnis consectetur.}");
                 }
@@ -145,7 +171,7 @@ var makiJS = {
 
             // Loop through the content array and display the needed elements on the screen
             for (var i = 0, len = settings.content.length; i < len; i++) {
-                    e = loremReplace(settings.content[i]);
+                    e = whiteSpaceCheck(loremReplace(settings.content[i]));
 
                 var $makiWrapper = $('<div class="makiWrapper clearfix"><div class="makiBtnWrapper"><button class="btnCopyEmmet">Copy Emmet</button> <button class="btnCopyHTML">Copy HTML</button></div></div>').attr('data-emmet', e),
                     $makiSnippet = $('<div class="makiSnippet clearfix"/>').zencode(e);
@@ -179,7 +205,7 @@ var makiJS = {
 
             // Loop through the content array and display the needed elements on the screen
             for (var i = 0, len = settings.content.length; i < len; i++) {
-                    e = loremReplace(settings.content[i]);
+                    e = whiteSpaceCheck(loremReplace(settings.content[i]));
 
                     $makiWrapper = $('<span />').attr('data-emmet', e),
                     $makiSnippet = $('<span />').zencode(e);
