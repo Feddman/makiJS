@@ -141,7 +141,7 @@ var makiJS = {
                     while (e.indexOf(whiteSpaceCheckChars[i] + ' ') > -1) {
                         e = e.replace(whiteSpaceCheckChars[i] + ' ', whiteSpaceCheckChars[i]);
                     }
-                });
+                }
                 return e;
             },
 
