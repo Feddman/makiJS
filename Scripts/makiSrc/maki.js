@@ -133,7 +133,7 @@ var makiJS = {
             @param      e | emmet string to check
             @return     the emmet-string with whitespaces removed
             **/
-            whiteSpaceCheck = function(i, e) {
+            whiteSpaceCheck = function(e) {
                 for (var i = 0, len = whiteSpaceCheckChars.length; i < len; i++) {
                     while (e.indexOf(' ' + whiteSpaceCheckChars[i]) > -1) {                        
                         e = e.replace(' ' + whiteSpaceCheckChars[i], whiteSpaceCheckChars[i]);
